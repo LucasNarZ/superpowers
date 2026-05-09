@@ -51,6 +51,7 @@ This structure informs the task decomposition. Each task should produce self-con
 # [Feature Name] Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **Checkpoint workflow:** If the human partner wants one task per fresh context, use `/execute-task <task-number> <plan-file>` instead. Execute exactly one task, verify it, ask for approval, commit after approval, then stop.
 
 **Goal:** [One sentence describing what this builds]
 
@@ -141,4 +142,4 @@ If you find issues, fix them inline. No need to re-review — just fix and move 
 
 After saving the plan, hand off directly to execution:
 
-**"Plan complete and saved to `docs/superpowers/plans/<filename>.md`. Next step: use superpowers:executing-plans to execute one task at a time, verify it, ask for human approval, commit it, and then continue."**
+**"Plan complete and saved to `docs/superpowers/plans/<filename>.md`. Next step: use superpowers:executing-plans to execute the plan continuously, or use `/execute-task <task-number> docs/superpowers/plans/<filename>.md` in a fresh context when you want one approved task per commit."**
