@@ -7,7 +7,7 @@ description: Use when you have a spec or requirements for a multi-step task, bef
 
 ## Overview
 
-Write comprehensive implementation plans assuming the engineer has zero context for our codebase and questionable taste. Document everything they need to know: which files to touch for each task, code, testing, docs they might need to check, how to test it. Give them the whole plan as bite-sized functional tasks. DRY. YAGNI. TDD. Human approval before each task is considered complete.
+Write implementation plans that give clear direction without doing the implementation work. Document the goal, architecture, files to create or modify, task boundaries, verification approach, and any small examples needed to clarify intent. Do not write full production code or complete tests in the plan. Give enough context for an engineer to implement confidently while leaving the implementation to the execution phase. DRY. YAGNI. TDD. Human approval before each task is considered complete.
 
 Assume they are a skilled developer, but know almost nothing about our toolset or problem domain. Assume they don't know good test design very well.
 
@@ -33,15 +33,18 @@ Before defining tasks, map out which files will be created or modified and what 
 
 This structure informs the task decomposition. Each task should produce self-contained, functional, verifiable changes that make sense independently.
 
-## Bite-Sized Task Granularity
+## Task Granularity
 
-**Each step is one action (2-5 minutes):**
-- "Write the failing test" - step
-- "Run it to make sure it fails" - step
-- "Implement the minimal code to make the test pass" - step
-- "Run the tests and make sure they pass" - step
-- "Ask for human approval" - step
-- "Commit after approval" - step
+Each task should be one coherent, independently verifiable change. Steps should describe the work to do, the key design constraints, and how to verify it.
+
+Use steps like:
+- "Add tests covering the new behavior" - include test intent and key cases, not full test bodies
+- "Implement the feature in the target module" - include responsibilities, inputs, outputs, and edge cases
+- "Run focused tests" - include exact command and expected result
+- "Ask for human approval" - include the approval message
+- "Commit after approval" - include files to stage and commit message
+
+Do not split plans into tiny mechanical edits. The implementer should make engineering decisions during execution.
 
 ## Plan Document Header
 
@@ -72,25 +75,31 @@ This structure informs the task decomposition. Each task should produce self-con
 - Modify: `exact/path/to/existing.py:123-145`
 - Test: `tests/exact/path/to/test.py`
 
-- [ ] **Step 1: Write the failing test**
+- [ ] **Step 1: Add focused tests for the behavior**
+
+Cover:
+- The main success path
+- The edge case that previously failed or is most likely to regress
+- Any integration boundary touched by this task
+
+Small example, only if needed to clarify shape:
 
 ```python
-def test_specific_behavior():
-    result = function(input)
-    assert result == expected
+assert function(representative_input) == expected_result
 ```
 
 - [ ] **Step 2: Run test to verify it fails**
 
 Run: `pytest tests/path/test.py::test_name -v`
-Expected: FAIL with "function not defined"
+Expected: FAIL because the behavior is not implemented yet
 
-- [ ] **Step 3: Write minimal implementation**
+- [ ] **Step 3: Implement the behavior**
 
-```python
-def function(input):
-    return expected
-```
+In `src/path/file.py`, add the logic that:
+- Accepts `[input contract]`
+- Returns `[output contract]`
+- Handles `[important edge case]`
+- Follows the existing pattern used by `[nearby function/module]`
 
 - [ ] **Step 4: Run test to verify it passes**
 
@@ -111,17 +120,33 @@ git commit -m "feat: add specific feature"
 
 ## No Placeholders
 
-Every step must contain the actual content an engineer needs. These are **plan failures** — never write them:
+Every step must contain enough direction for an engineer to act without guessing. These are **plan failures** — never write them:
 - "TBD", "TODO", "implement later", "fill in details"
 - "Add appropriate error handling" / "add validation" / "handle edge cases"
-- "Write tests for the above" (without actual test code)
-- "Similar to Task N" (repeat the code — the engineer may be reading tasks out of order)
-- Steps that describe what to do without showing how (code blocks required for code steps)
+- "Write tests for the above" (without naming the behaviors and cases to cover)
+- "Similar to Task N" (repeat the relevant direction — the engineer may be reading tasks out of order)
+- Steps that describe what to do without naming files, responsibilities, inputs, outputs, or verification
 - References to types, functions, or methods not defined in any task
+
+## Code In Plans
+
+Plans are not implementation patches. Do not write complete production code, complete test files, or large code blocks.
+
+Allowed:
+- Small snippets that clarify an interface, assertion shape, command, config key, or data structure
+- Function signatures when the exact contract matters
+- Pseudocode for non-obvious algorithms
+
+Not allowed:
+- Full function bodies that solve the task
+- Complete test cases when a list of behaviors is enough
+- Copy-paste-ready files
+- Repeating code across tasks to avoid placeholders
 
 ## Remember
 - Exact file paths always
-- Complete code in every step — if a step changes code, show the code
+- Direction over implementation: files, responsibilities, contracts, edge cases, and verification
+- Small code examples only when they clarify intent better than prose
 - Exact commands with expected output
 - DRY, YAGNI, TDD
 - Each task ends with human approval before commit
