@@ -31,11 +31,20 @@ Before defining tasks, map out which files will be created or modified and what 
 - Files that change together should live together. Split by responsibility, not by technical layer.
 - In existing codebases, follow established patterns. If the codebase uses large files, don't unilaterally restructure - but if a file you're modifying has grown unwieldy, including a split in the plan is reasonable.
 
-This structure informs the task decomposition. Each task should produce self-contained, functional, verifiable changes that make sense independently.
+This structure informs the task decomposition. Each task must be self-contained: a fresh agent should be able to execute it using only the plan header, the full text of that task, and the files listed in that task's **Relevant Files** section.
 
 ## Task Granularity
 
 Each task should be one coherent, independently verifiable change. Steps should describe the work to do, the key design constraints, and how to verify it.
+
+Every task must include a **Relevant Files** section before the steps. List every file the implementer is expected to read, create, modify, or use for verification. Include one short responsibility note per file so the executor knows why it matters.
+
+Assume a fresh agent will receive only:
+- The plan header
+- The full text of the current task
+- The files named in **Relevant Files**
+
+Therefore each task must repeat any task-specific context, contracts, decisions, and dependencies it needs. Do not rely on the executor reading earlier or later tasks.
 
 Use steps like:
 - "Add tests covering the new behavior" - include test intent and key cases, not full test bodies
@@ -70,10 +79,11 @@ Do not split plans into tiny mechanical edits. The implementer should make engin
 ````markdown
 ### Task N: [Component Name]
 
-**Files:**
-- Create: `exact/path/to/file.py`
-- Modify: `exact/path/to/existing.py:123-145`
-- Test: `tests/exact/path/to/test.py`
+**Relevant Files:**
+- Create: `exact/path/to/file.py` - new implementation for `[responsibility]`
+- Modify: `exact/path/to/existing.py:123-145` - existing behavior to extend
+- Test: `tests/exact/path/to/test.py` - focused coverage for this task
+- Reference: `src/nearby/pattern.py` - established pattern to follow
 
 - [ ] **Step 1: Add focused tests for the behavior**
 
@@ -126,6 +136,8 @@ Every step must contain enough direction for an engineer to act without guessing
 - "Write tests for the above" (without naming the behaviors and cases to cover)
 - "Similar to Task N" (repeat the relevant direction — the engineer may be reading tasks out of order)
 - Steps that describe what to do without naming files, responsibilities, inputs, outputs, or verification
+- Tasks without a **Relevant Files** section listing every create/modify/test/reference file needed to execute that task independently
+- Tasks that rely on context from another task without restating the relevant contract or decision
 - References to types, functions, or methods not defined in any task
 
 ## Code In Plans
@@ -145,6 +157,8 @@ Not allowed:
 
 ## Remember
 - Exact file paths always
+- Every task has **Relevant Files** with create/modify/test/reference entries as needed
+- Every task is independently executable from its own text plus its **Relevant Files**
 - Direction over implementation: files, responsibilities, contracts, edge cases, and verification
 - Small code examples only when they clarify intent better than prose
 - Exact commands with expected output

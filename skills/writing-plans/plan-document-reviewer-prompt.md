@@ -22,6 +22,7 @@ Task tool (general-purpose):
     | Completeness | TODOs, placeholders, incomplete tasks, missing steps |
     | Spec Alignment | Plan covers spec requirements, no major scope creep |
     | Task Decomposition | Tasks have clear boundaries, steps are actionable |
+    | Task Independence | Each task can be executed from the plan header, its own text, and its Relevant Files without relying on earlier/later tasks |
     | Directional Scope | Plan names files, responsibilities, contracts, edge cases, and verification without full production code or complete test bodies |
     | Buildability | Could an engineer follow this plan without getting stuck? |
 
@@ -32,7 +33,7 @@ Task tool (general-purpose):
     Minor wording, stylistic preferences, and "nice to have" suggestions are not.
 
     Approve unless there are serious gaps — missing requirements from the spec,
-    contradictory steps, placeholder content, tasks so vague they can't be acted on, or plans that include copy-paste-ready implementation code.
+    contradictory steps, placeholder content, tasks so vague they can't be acted on, missing Relevant Files sections, tasks that depend on unstated context from other tasks, or plans that include copy-paste-ready implementation code.
 
     ## Output Format
 
